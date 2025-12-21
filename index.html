@@ -146,123 +146,128 @@
 
     <script>
         // JavaScript Логіка Парсингу
-        
-        // !!! ОНОВІТЬ ЦІ ДАНІ !!!
-        const GITHUB_USERNAME = 'robocode-pb'; 
-        const REPO_NAME = 'startPage';
-        const README_RAW_URL = `https://raw.githubusercontent.com/${GITHUB_USERNAME}/${REPO_NAME}/main/README.md`;
-        // !!! ОНОВІТЬ ЦІ ДАНІ !!!
+   // JavaScript Логіка Парсингу
+const GITHUB_USERNAME = 'robocode-pb'; 
+const REPO_NAME = 'startPage';
+const README_RAW_URL = `https://raw.githubusercontent.com/${GITHUB_USERNAME}/${REPO_NAME}/main/README.md`;
 
+const container = document.getElementById('content-container');
 
-        const container = document.getElementById('content-container');
-        // ОНОВЛЕНО: Регулярний вираз для пошуку - [Назва Посилання](Посилання)
-        const LINK_REGEX = /-\s*\[([^\]]+)\]\(([^)]+)\)/g; 
+// ОНОВЛЕНО: Гнучкий регулярний вираз для різних типів дужок
+const LINK_REGEX = /-\s*[\[\(]([^\]\)]+)[\]\)]\(([^)]+)\)/g; 
 
-        function handleSearch(event) {
-            if (event.key === 'Enter') {
-                performSearch();
-            }
-        }
+function handleSearch(event) {
+    if (event.key === 'Enter') {
+        performSearch();
+    }
+}
 
-        function performSearch() {
-            const query = document.querySelector('.search-bar input').value;
-            if (query) {
-                // Використовуємо Google для пошуку за замовчуванням
-                window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}`, '_blank');
-            }
-        }
+function performSearch() {
+    const query = document.querySelector('.search-bar input').value;
+    if (query) {
+        window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}`, '_blank');
+    }
+}
 
-        async function loadAndParseReadme() {
-            try {
-                const response = await fetch(README_RAW_URL);
-                if (!response.ok) {
-                    throw new Error(`Помилка завантаження README: ${response.statusText}`);
-                }
-                const readmeText = await response.text();
+async function loadAndParseReadme() {
+    try {
+        const response = await fetch(README_RAW_URL);
+        if (!response.ok) throw new Error(`Помилка: ${response.statusText}`);
+        const readmeText = await response.text();
 
-                // Розділити текст на секції по заголовках Markdown (# Заголовок)
-                const sections = readmeText.split(/#\s*([^\n]+)/g).filter(s => s.trim() !== '');
+        // Розбиваємо текст на секції по символу #
+        const sections = readmeText.split(/(?=#\s)/g).filter(s => s.trim() !== '');
 
-                // Обробка кожної пари [Назва заголовка, Вміст секції]
-                for (let i = 0; i < sections.length; i += 2) {
-                    const title = sections[i];
-                    const content = sections[i + 1] || '';
+        sections.forEach(section => {
+            const lines = section.split('\n');
+            const title = lines[0].replace('#', '').trim();
+            const content = section;
 
-                    const linksContainer = document.createElement('div');
-                    linksContainer.className = 'links-container';
-                    
-                    let match;
-                    let linkCount = 0;
-
-                    // Парсинг посилань у вмісті секції
-                    while ((match = LINK_REGEX.exec(content)) !== null) {
-                        const name = match[1]; 
-                        const url = match[2];
-                        
-                        const linkBlock = createLinkBlock(name, url);
-                        linksContainer.appendChild(linkBlock);
-                        linkCount++;
-                    }
-                    
-                    // Якщо в секції є посилання, створюємо і додаємо її
-                    if (linkCount > 0) {
-                         const sectionDiv = document.createElement('div');
-                         sectionDiv.className = 'link-section';
-                         
-                         const sectionTitle = document.createElement('h2');
-                         sectionTitle.textContent = title.trim();
-
-                         sectionDiv.appendChild(sectionTitle);
-                         sectionDiv.appendChild(linksContainer);
-                         container.appendChild(sectionDiv);
-                    }
-                }
-
-            } catch (error) {
-                console.error('Не вдалося завантажити або розібрати README:', error);
-                container.innerHTML = '<p style="color:red; width:100%; text-align:center;">Помилка завантаження даних. Перевірте консоль та URL до README.md.</p>';
-            }
-        }
-
-        function createLinkBlock(name, url) {
-            const block = document.createElement('a');
-            block.href = url;
-            block.target = '_blank';
-            block.className = 'link-block';
-
-            // Якщо URL не існує (наприклад, - [Назва]()), не генеруємо блок
-            if (!url) return null; 
-
-            const initial = name.charAt(0).toUpperCase();
-
-            // Аватар (перша літера)
-            const avatar = document.createElement('div');
-            avatar.className = 'link-avatar';
-            avatar.textContent = initial; 
+            const linksContainer = document.createElement('div');
+            linksContainer.className = 'links-container';
             
-            // Назва
-            const text = document.createElement('div');
-            text.className = 'link-text';
-            text.textContent = name;
-            
-            // URL домену
-            const urlText = document.createElement('span');
-            urlText.className = 'link-url';
-            try {
-                // Використовуємо конструктор URL для отримання лише домену
-                urlText.textContent = new URL(url).hostname; 
-            } catch (e) {
-                urlText.textContent = url;
+            let match;
+            let linkCount = 0;
+
+            // Скидаємо індекс пошуку RegEx
+            LINK_REGEX.lastIndex = 0;
+
+            while ((match = LINK_REGEX.exec(content)) !== null) {
+                const name = match[1]; 
+                const url = match[2];
+                const linkBlock = createLinkBlock(name, url);
+                if (linkBlock) {
+                    linksContainer.appendChild(linkBlock);
+                    linkCount++;
+                }
             }
+            
+            if (linkCount > 0) {
+                 const sectionDiv = document.createElement('div');
+                 sectionDiv.className = 'link-section';
+                 const sectionTitle = document.createElement('h2');
+                 sectionTitle.textContent = title;
+                 sectionDiv.appendChild(sectionTitle);
+                 sectionDiv.appendChild(linksContainer);
+                 container.appendChild(sectionDiv);
+            }
+        });
 
-            block.appendChild(avatar);
-            block.appendChild(text);
-            block.appendChild(urlText);
+    } catch (error) {
+        console.error('Помилка:', error);
+        container.innerHTML = '<p style="color:red; width:100%; text-align:center;">Помилка завантаження даних.</p>';
+    }
+}
 
-            return block;
-        }
+function createLinkBlock(name, url) {
+    if (!url) return null; 
 
-        loadAndParseReadme();
-    </script>
+    const block = document.createElement('a');
+    block.href = url;
+    block.target = '_blank';
+    block.className = 'link-block';
+
+    let domain = "";
+    try {
+        domain = new URL(url).hostname;
+    } catch (e) {
+        domain = url;
+    }
+
+    // ОНОВЛЕНО: Створення логотипу через Google Favicon API
+    const avatar = document.createElement('div');
+    avatar.className = 'link-avatar';
+    
+    const icon = document.createElement('img');
+    // Використовуємо сервіс Google для отримання іконок (sz=64 - розмір)
+    icon.src = `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
+    icon.alt = name.charAt(0);
+    icon.style.width = '100%';
+    icon.style.borderRadius = '5px';
+    
+    // Якщо іконка не завантажиться, покажемо першу літеру
+    icon.onerror = () => {
+        avatar.textContent = name.charAt(0).toUpperCase();
+        icon.remove();
+    };
+
+    avatar.appendChild(icon);
+    
+    const text = document.createElement('div');
+    text.className = 'link-text';
+    text.textContent = name;
+    
+    const urlText = document.createElement('span');
+    urlText.className = 'link-url';
+    urlText.textContent = domain;
+
+    block.appendChild(avatar);
+    block.appendChild(text);
+    block.appendChild(urlText);
+
+    return block;
+}
+
+loadAndParseReadme();    </script>
 </body>
 </html>
