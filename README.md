@@ -12,4 +12,4 @@
 
 # Expert
 - [EasyEDA](https://pro.easyeda.com/)
-- [CircutiJS](https://tinyurl.com/25c9xevs)
+- [CircutsJS](https://www.falstad.com/circuit/circuitjs.html)
