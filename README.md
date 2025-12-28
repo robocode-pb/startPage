@@ -9,6 +9,7 @@
 
 # Middle
 - [8*16 pixel Editor](https://robocode-pb.github.io/2025rc/APP/lcd1602Chars.html)
+- [GameBoy](https://robocode-pb.github.io/2025rc/APP/pixEdit.html)
 
 # Expert
 - [EasyEDA](https://pro.easyeda.com/)
