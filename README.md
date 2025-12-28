@@ -4,11 +4,11 @@
 - [Code.org](https://studio.code.org/projects/minecraft_adventurer/rmP1GqejsttGP-h84NRyCU4qy2-6n69A01MmRUknsuw/edit?lang=uk-UA)
 
 # IT start
-- (Pixilart)[https://www.pixilart.com/draw?ref=home-page]
-- (MakeCode)[https://arcade.makecode.com/#editor]
+- [Pixilart](https://www.pixilart.com/draw?ref=home-page)
+- [MakeCode](https://arcade.makecode.com/#editor)
 
 # Middle
-- [8*16 pixel Editor](robocode-pb.github.io/2025rc/APP/pixEdit.html)
+- [8*16 pixel Editor](https://robocode-pb.github.io/2025rc/APP/lcd1602Chars.html)
 
 # Expert
 - [EasyEDA](https://pro.easyeda.com/)
