@@ -9,7 +9,8 @@
 
 # Middle
 - [8*16 pixel Editor](https://robocode-pb.github.io/2025rc/APP/lcd1602Chars.html)
-- [GameBoy](https://robocode-pb.github.io/2025rc/APP/pixEdit.html)
+- [GameBoy dot](https://wokwi.com/projects/452218656089930753)
+- [GameBoy animation](https://robocode-pb.github.io/2025rc/APP/pixEdit.html)
 
 # Expert
 - [EasyEDA](https://pro.easyeda.com/)
