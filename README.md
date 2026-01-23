@@ -1,4 +1,5 @@
 # Важливі посилання
+- [Digitee](https://robocode.digitee.space/)
 - [Kahoot](https://kahoot.it/)
 - [TinkerCAD](https://www.tinkercad.com/dashboard)
 - [Code.org](https://studio.code.org/projects/minecraft_adventurer/rmP1GqejsttGP-h84NRyCU4qy2-6n69A01MmRUknsuw/edit?lang=uk-UA)
@@ -9,8 +10,9 @@
 
 # Middle
 - [8*16 pixel Editor](https://robocode-pb.github.io/2025rc/APP/lcd1602Chars.html)
-- [GameBoy dot](https://wokwi.com/projects/452218656089930753)
-- [GameBoy animation](https://robocode-pb.github.io/2025rc/APP/pixEdit.html)
+- [GameBoy animation Editor](https://robocode-pb.github.io/2025rc/APP/pixEdit.html)
+- [GB Game Car](https://wokwi.com/projects/452218656089930753)
+- [GB Game Snake](https://wokwi.com/projects/453946525287407617)
 
 # Expert
 - [EasyEDA](https://pro.easyeda.com/)
