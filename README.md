@@ -11,6 +11,7 @@
 # Middle
 - [8*16 pixel Editor](https://robocode-pb.github.io/2025rc/APP/lcd1602Chars.html)
 - [GameBoy animation Editor](https://robocode-pb.github.io/2025rc/APP/pixEdit.html)
+- [GB Game Arcanoid](https://wokwi.com/projects/456491167533370369)
 - [GB Menu](https://wokwi.com/projects/455852648338599937)
 - [GB Game Car](https://wokwi.com/projects/452218656089930753)
 - [GB Game Snake](https://wokwi.com/projects/453946525287407617)
