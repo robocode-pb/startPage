@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
     <title>ROBOCODE - Стартова Сторінка</title>
     
     <style>
-        /* CSS стилі (Без змін) */
         body {
             background-color: #004cff;
             color: white;
@@ -25,34 +25,72 @@
             margin-bottom: 50px;
         }
 
-        .search-bar {
-            display: flex;
+        /* Контейнер пошуку */
+        .search-container {
+            position: relative;
             width: 600px;
             max-width: 90%;
             margin-bottom: 50px;
+            z-index: 1000;
+        }
+
+        .search-bar {
+            display: flex;
             background-color: white;
-            border-radius: 8px;
+            border-radius: 24px; /* Округлі як у Google */
             overflow: hidden;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            transition: border-radius 0.2s;
+        }
+
+        .search-bar.has-suggestions {
+            border-radius: 24px 24px 0 0;
         }
 
         .search-bar input {
             flex-grow: 1;
             border: none;
-            padding: 10px 15px;
-            font-size: 1em;
+            padding: 12px 20px;
+            font-size: 1.1em;
             outline: none;
         }
 
         .search-bar button {
             background: none;
             border: none;
-            padding: 10px 15px;
+            padding: 10px 20px;
             cursor: pointer;
             font-size: 1.2em;
             color: #333;
         }
 
+        /* Стилі підказок */
+        .suggestions-list {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 0 0 24px 24px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+            color: #333;
+            list-style: none;
+            padding: 10px 0;
+            margin: 0;
+            display: none;
+            border-top: 1px solid #eee;
+        }
+
+        .suggestions-list li {
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        .suggestions-list li:hover, .suggestions-list li.selected {
+            background-color: #f1f1f1;
+        }
+
+        /* Контент секцій */
         #content-container {
             display: flex;
             justify-content: center;
@@ -95,11 +133,12 @@
             flex-direction: column;
             min-height: 80px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-            transition: background-color 0.2s;
+            transition: transform 0.2s, background-color 0.2s;
         }
 
         .link-block:hover {
             background-color: #0022aa;
+            transform: translateY(-2px);
         }
 
         .link-avatar {
@@ -107,166 +146,185 @@
             height: 30px;
             border-radius: 5px;
             background-color: #ffffff;
-            color: #0033cc;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-weight: bold;
-            font-size: 1.2em;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
         }
 
-        .link-text {
-            font-weight: bold;
-            font-size: 1em;
-            margin-bottom: 2px;
-        }
-
-        .link-url {
-            font-size: 0.8em;
-            color: #bbbbbb;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-        }
+        .link-text { font-weight: bold; font-size: 1em; margin-bottom: 2px; }
+        .link-url { font-size: 0.8em; color: #bbbbbb; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
     </style>
 </head>
 <body>
-    <header>
-        <div class="search-bar">
-            <input type="text" placeholder="Search the web" onkeypress="handleSearch(event)">
+
+    <header class="search-container">
+        <div class="search-bar" id="search-bar-wrap">
+            <input type="text" id="search-input" placeholder="Search the web" autocomplete="off">
             <button onclick="performSearch()">🔍</button>
         </div>
+        <ul class="suggestions-list" id="suggestions"></ul>
     </header>
 
-    <main id="content-container">
-        </main>
+    <main id="content-container"></main>
 
     <h1>ROBOCODE</h1>
 
     <script>
-        // JavaScript Логіка Парсингу
-   // JavaScript Логіка Парсингу
+        const README_RAW_URL = 'https://raw.githubusercontent.com/robocode-pb/startPage/refs/heads/main/README.md';
+        const LINK_REGEX = /-\s*[\[\(]([^\]\)]+)[\]\)]\(([^)]+)\)/g;
 
-const README_RAW_URL = 'https://raw.githubusercontent.com/robocode-pb/startPage/refs/heads/main/README.md';
+        const searchInput = document.getElementById('search-input');
+        const suggestionsList = document.getElementById('suggestions');
+        const searchBarWrap = document.getElementById('search-bar-wrap');
+        let selectedIndex = -1;
 
-const container = document.getElementById('content-container');
+        // --- ЛОГІКА ПОШУКУ ТА АВТОДОПОВНЕННЯ ---
 
-// ОНОВЛЕНО: Гнучкий регулярний вираз для різних типів дужок
-const LINK_REGEX = /-\s*[\[\(]([^\]\)]+)[\]\)]\(([^)]+)\)/g; 
-
-function handleSearch(event) {
-    if (event.key === 'Enter') {
-        performSearch();
-    }
-}
-
-function performSearch() {
-    const query = document.querySelector('.search-bar input').value;
-    if (query) {
-        window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}`, '_blank');
-    }
-}
-
-async function loadAndParseReadme() {
-    try {
-        const response = await fetch(README_RAW_URL);
-        if (!response.ok) throw new Error(`Помилка: ${response.statusText}`);
-        const readmeText = await response.text();
-
-        // Розбиваємо текст на секції по символу #
-        const sections = readmeText.split(/(?=#\s)/g).filter(s => s.trim() !== '');
-
-        sections.forEach(section => {
-            const lines = section.split('\n');
-            const title = lines[0].replace('#', '').trim();
-            const content = section;
-
-            const linksContainer = document.createElement('div');
-            linksContainer.className = 'links-container';
-            
-            let match;
-            let linkCount = 0;
-
-            // Скидаємо індекс пошуку RegEx
-            LINK_REGEX.lastIndex = 0;
-
-            while ((match = LINK_REGEX.exec(content)) !== null) {
-                const name = match[1]; 
-                const url = match[2];
-                const linkBlock = createLinkBlock(name, url);
-                if (linkBlock) {
-                    linksContainer.appendChild(linkBlock);
-                    linkCount++;
-                }
-            }
-            
-            if (linkCount > 0) {
-                 const sectionDiv = document.createElement('div');
-                 sectionDiv.className = 'link-section';
-                 const sectionTitle = document.createElement('h2');
-                 sectionTitle.textContent = title;
-                 sectionDiv.appendChild(sectionTitle);
-                 sectionDiv.appendChild(linksContainer);
-                 container.appendChild(sectionDiv);
+        searchInput.addEventListener('input', () => {
+            const query = searchInput.value;
+            if (query.trim().length > 0) {
+                const script = document.createElement('script');
+                script.src = `https://suggestqueries.google.com/complete/search?client=firefox&q=${encodeURIComponent(query)}&callback=showSuggestions`;
+                document.body.appendChild(script);
+                document.body.removeChild(script);
+            } else {
+                hideSuggestions();
             }
         });
 
-    } catch (error) {
-        console.error('Помилка:', error);
-        container.innerHTML = '<p style="color:red; width:100%; text-align:center;">Помилка завантаження даних.</p>';
-    }
-}
+        window.showSuggestions = function(data) {
+            const suggestions = data[1];
+            suggestionsList.innerHTML = '';
+            selectedIndex = -1;
 
-function createLinkBlock(name, url) {
-    if (!url) return null; 
+            if (suggestions.length > 0) {
+                suggestions.slice(0, 8).forEach((item, index) => {
+                    const li = document.createElement('li');
+                    li.textContent = item;
+                    li.onclick = () => {
+                        searchInput.value = item;
+                        performSearch();
+                    };
+                    suggestionsList.appendChild(li);
+                });
+                suggestionsList.style.display = 'block';
+                searchBarWrap.classList.add('has-suggestions');
+            } else {
+                hideSuggestions();
+            }
+        };
 
-    const block = document.createElement('a');
-    block.href = url;
-    block.target = '_blank';
-    block.className = 'link-block';
+        function hideSuggestions() {
+            suggestionsList.style.display = 'none';
+            searchBarWrap.classList.remove('has-suggestions');
+        }
 
-    let domain = "";
-    try {
-        domain = new URL(url).hostname;
-    } catch (e) {
-        domain = url;
-    }
+        // Керування клавіатурою (Enter, Стрілки)
+        searchInput.addEventListener('keydown', (e) => {
+            const items = suggestionsList.getElementsByTagName('li');
+            
+            if (e.key === 'ArrowDown') {
+                selectedIndex = (selectedIndex + 1) % items.length;
+                updateSelection(items);
+                e.preventDefault();
+            } else if (e.key === 'ArrowUp') {
+                selectedIndex = (selectedIndex - 1 + items.length) % items.length;
+                updateSelection(items);
+                e.preventDefault();
+            } else if (e.key === 'Enter') {
+                if (selectedIndex > -1) {
+                    searchInput.value = items[selectedIndex].textContent;
+                }
+                performSearch();
+            }
+        });
 
-    // ОНОВЛЕНО: Створення логотипу через Google Favicon API
-    const avatar = document.createElement('div');
-    avatar.className = 'link-avatar';
-    
-    const icon = document.createElement('img');
-    // Використовуємо сервіс Google для отримання іконок (sz=64 - розмір)
-    icon.src = `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
-    icon.alt = name.charAt(0);
-    icon.style.width = '100%';
-    icon.style.borderRadius = '5px';
-    
-    // Якщо іконка не завантажиться, покажемо першу літеру
-    icon.onerror = () => {
-        avatar.textContent = name.charAt(0).toUpperCase();
-        icon.remove();
-    };
+        function updateSelection(items) {
+            Array.from(items).forEach((li, i) => {
+                li.classList.toggle('selected', i === selectedIndex);
+                if (i === selectedIndex) searchInput.value = li.textContent;
+            });
+        }
 
-    avatar.appendChild(icon);
-    
-    const text = document.createElement('div');
-    text.className = 'link-text';
-    text.textContent = name;
-    
-    const urlText = document.createElement('span');
-    urlText.className = 'link-url';
-    urlText.textContent = domain;
+        function performSearch() {
+            const query = searchInput.value;
+            if (query) {
+                window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}`, '_blank');
+                hideSuggestions();
+            }
+        }
 
-    block.appendChild(avatar);
-    block.appendChild(text);
-    block.appendChild(urlText);
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.search-container')) hideSuggestions();
+        });
 
-    return block;
-}
+        // --- ЛОГІКА ПАРСИНГУ README ---
 
-loadAndParseReadme();    </script>
+        async function loadAndParseReadme() {
+            try {
+                const response = await fetch(README_RAW_URL);
+                if (!response.ok) throw new Error(`Помилка: ${response.statusText}`);
+                const readmeText = await response.text();
+                const sections = readmeText.split(/(?=#\s)/g).filter(s => s.trim() !== '');
+                const container = document.getElementById('content-container');
+
+                sections.forEach(section => {
+                    const lines = section.split('\n');
+                    const title = lines[0].replace('#', '').trim();
+                    const linksContainer = document.createElement('div');
+                    linksContainer.className = 'links-container';
+                    
+                    let match;
+                    let linkCount = 0;
+                    LINK_REGEX.lastIndex = 0;
+
+                    while ((match = LINK_REGEX.exec(section)) !== null) {
+                        const block = createLinkBlock(match[1], match[2]);
+                        if (block) {
+                            linksContainer.appendChild(block);
+                            linkCount++;
+                        }
+                    }
+                    
+                    if (linkCount > 0) {
+                        const sectionDiv = document.createElement('div');
+                        sectionDiv.className = 'link-section';
+                        sectionDiv.innerHTML = `<h2>${title}</h2>`;
+                        sectionDiv.appendChild(linksContainer);
+                        container.appendChild(sectionDiv);
+                    }
+                });
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        function createLinkBlock(name, url) {
+            if (!url) return null;
+            const block = document.createElement('a');
+            block.href = url;
+            block.target = '_blank';
+            block.className = 'link-block';
+
+            let domain = "";
+            try { domain = new URL(url).hostname; } catch (e) { domain = url; }
+
+            const avatar = document.createElement('div');
+            avatar.className = 'link-avatar';
+            const icon = document.createElement('img');
+            icon.src = `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
+            icon.style.width = '100%';
+            icon.style.borderRadius = '5px';
+            icon.onerror = () => { avatar.textContent = name.charAt(0).toUpperCase(); icon.remove(); };
+
+            avatar.appendChild(icon);
+            block.innerHTML = `<div class="link-text">${name}</div><span class="link-url">${domain}</span>`;
+            block.prepend(avatar);
+            return block;
+        }
+
+        loadAndParseReadme();
+    </script>
 </body>
 </html>
