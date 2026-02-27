@@ -3,6 +3,7 @@
 - [Kahoot](https://kahoot.it/)
 - [TinkerCAD](https://www.tinkercad.com/dashboard)
 - [Code.org](https://studio.code.org/projects/minecraft_adventurer/rmP1GqejsttGP-h84NRyCU4qy2-6n69A01MmRUknsuw/edit?lang=uk-UA)
+- [ГуглДиск](https://drive.google.com/drive/folders/1TuI1kq9HOvI2_tVXswBsF3Ai8GHafVFQ?usp=sharing)
 
 # IT start
 - [Pixilart](https://www.pixilart.com/draw?ref=home-page)
