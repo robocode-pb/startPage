@@ -8,6 +8,8 @@
 # IT start
 - [Pixilart](https://www.pixilart.com/draw?ref=home-page)
 - [MakeCode](https://arcade.makecode.com/#editor)
+- [Cубота 12:00](https://www.tinkercad.com/joinclass/DZBKWYJSR)
+- [Неділя 12:00](https://www.tinkercad.com/joinclass/NEWZSP4U8)
 
 # Middle
 - [8*16 pixel Editor](https://robocode-pb.github.io/2025rc/APP/lcd1602Chars.html)
