@@ -6,6 +6,7 @@
 - [ГуглДиск](https://drive.google.com/drive/folders/1TuI1kq9HOvI2_tVXswBsF3Ai8GHafVFQ?usp=sharing)
 
 # IT start
+- [monkeytype](https://monkeytype.com/?testSettings=NoIg7g9gTgJgziANCArEgdgVwDbcQMwENs4BTA4s5TAaykIEt0HD0kR1oBbYpYAXX5A)
 - [Pixilart](https://www.pixilart.com/draw?ref=home-page)
 - [MakeCode](https://arcade.makecode.com/#editor)
 - [Cубота 12:00](https://www.tinkercad.com/joinclass/DZBKWYJSR)
