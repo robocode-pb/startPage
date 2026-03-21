@@ -30,3 +30,6 @@
 - [custom library paint ft6206](https://wokwi.com/projects/457203393183452161)
 - [Sonar library](https://wokwi.com/projects/457208794803869697)
 
+# Web
+- [snake](https://editor.p5js.org/bohdan.pogorielov.mail/sketches/ypp7EnfN9)
+
