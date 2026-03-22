@@ -14,6 +14,7 @@
 - [Неділя 12:00](https://www.tinkercad.com/joinclass/NEWZSP4U8)
 
 # Middle
+- [BT HC05 chat](https://wokwi.com/projects/426841254078692353)
 - [8*16 pixel Editor](https://robocode-pb.github.io/2025rc/APP/lcd1602Chars.html)
 - [GameBoy animation Editor](https://robocode-pb.github.io/2025rc/APP/pixEdit.html)
 - [GB Game Tetris](https://wokwi.com/projects/457758130963483649)
