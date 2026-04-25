@@ -31,7 +31,7 @@
 - [GB Game Car](https://wokwi.com/projects/452218656089930753)
 - [GB Game Snake](https://wokwi.com/projects/453946525287407617)
 
-# Expert
+# Senior
 - [EasyEDA](https://pro.easyeda.com/)
 - [CircutsJS](https://www.falstad.com/circuit/circuitjs.html)
 - [OOP C++](https://wokwi.com/projects/456569333784026113)
